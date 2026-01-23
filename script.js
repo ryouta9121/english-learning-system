@@ -1,23 +1,22 @@
 // -------------------- RomajiChecker クラス --------------------
 class RomajiChecker {
   constructor(textJa, textRo, alternatives = {}) {
-    this.textJa = textJa;                   // 日本語文字列
-    this.textRo = textRo.toUpperCase();     // ローマ字大文字表示
-    this.alternatives = alternatives;       // ひらがなごとのローマ字候補
-    this.cursorJa = 0;                      // 現在の日本語文字位置
-    this.typed = "";                        // 現在日本語1文字分の入力バッファ
-    this.romajiTyped = 0;                   // ローマ字全体の入力済み文字数
+    this.textJa = textJa;
+    this.textRo = textRo.toUpperCase();
+    this.alternatives = alternatives;
+    this.cursorJa = 0;
+    this.typed = "";
+    this.romajiTyped = 0;
     this.miss = 0;
     this.romajiLengths = this.calcLengths();
   }
-
+  
   // 日本語1文字ごとのローマ字長を計算
   calcLengths() {
     const lengths = [];
     for (let i = 0; i < this.textJa.length; i++) {
       const kana = this.textJa[i];
       if (this.alternatives[kana]) {
-        // 候補の最大長を採用
         lengths.push(Math.max(...this.alternatives[kana].map(s => s.length)));
       } else {
         lengths.push(1); // デフォルト1文字
@@ -36,18 +35,30 @@ class RomajiChecker {
       this.textRo.slice(this.romajiTyped, this.romajiTyped + this.romajiLengths[this.cursorJa])
     ];
 
-    // 部分一致していなければミス
-    if (!candidates.some(c => c.startsWith(this.typed))) {
+    // 部分一致する候補があるか
+    const matching = candidates.filter(c => c.startsWith(this.typed));
+
+    if (matching.length === 0) {
+      // ミスカウント
       this.miss++;
-      this.typed = ""; // バッファリセット
-      return false;
+
+      // typed を候補と共通の先頭部分だけ残す
+      let newTyped = "";
+      for (const c of candidates) {
+        let i = 0;
+        while (i < c.length && i < this.typed.length && c[i] === this.typed[i]) i++;
+        if (i > newTyped.length) newTyped = this.typed.slice(0, i);
+      }
+      this.typed = newTyped;
+
+      return false; // 先に進まない
     }
 
     // 完全一致した場合、日本語文字を進める
     if (candidates.some(c => c === this.typed)) {
       this.romajiTyped += this.typed.length;
       this.cursorJa++;
-      this.typed = "";
+      this.typed = ""; // 正解したらバッファをクリア
     }
 
     return true;
@@ -72,7 +83,7 @@ class RomajiChecker {
 
   // 入力完了か
   isComplete() {
-    return this.cursorJa >= this.textJa.length;
+    return this.romajiTyped >= this.textRo.length;
   }
 
   // 正確率
@@ -174,7 +185,7 @@ input.addEventListener("keydown", e => {
   const ok = checker.inputKey(key);
 
   if (!ok) {
-    // 間違えた場合は揺れる
+    // 間違えた場合は画面を揺らす
     typingScreen.classList.remove("shake");
     void typingScreen.offsetWidth; // reflow
     typingScreen.classList.add("shake");
