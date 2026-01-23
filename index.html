@@ -1,237 +1,55 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <title>Typing Master</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: "Inter", sans-serif; }
-    .cursor { animation: blink 1s infinite; }
-    @keyframes blink {
-      0%, 50%, 100% { opacity: 1; }
-      25%, 75% { opacity: 0; }
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Typing Master</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+.cursor { animation: blink 1s infinite; }
+@keyframes blink { 0%,50%,100%{opacity:1;}25%,75%{opacity:0;} }
+</style>
 </head>
 <body class="bg-gradient-to-br from-indigo-900 to-black min-h-screen text-white">
 
-<!-- ===== 左サイド広告 ===== -->
-<div class="hidden lg:block fixed top-1/2 left-4 -translate-y-1/2 w-48 
-            bg-white/5 border border-white/10 rounded-xl p-4 text-center shadow-lg">
-  <div class="text-xs text-gray-400 mb-2">スポンサー</div>
-
-  <!-- ▼▼ アフィリエイトコードここ ▼▼ -->
-  <a href="https://example.com" target="_blank"
-     class="block text-indigo-300 hover:underline">
-    ⌨️ 静音メカニカルキーボード  
-    <span class="block text-xs text-gray-400 mt-1">タイピングが速くなる</span>
-  </a>
-  <!-- ▲▲ アフィリエイトコードここ ▲▲ -->
-</div>
-
-<!-- ===== 右サイド広告 ===== -->
-<div class="hidden lg:block fixed top-1/2 right-4 -translate-y-1/2 w-48 
-            bg-white/5 border border-white/10 rounded-xl p-4 text-center shadow-lg">
-  <div class="text-xs text-gray-400 mb-2">スポンサー</div>
-
-  <!-- ▼▼ アフィリエイトコードここ ▼▼ -->
-  <a href="https://example.com" target="_blank"
-     class="block text-emerald-300 hover:underline">
-    🎧 集中力UPヘッドホン  
-    <span class="block text-xs text-gray-400 mt-1">ノイズキャンセリング</span>
-  </a>
-  <!-- ▲▲ アフィリエイトコードここ ▲▲ -->
-</div>
-
-
 <div class="max-w-3xl mx-auto p-8">
 
-  <!-- ===== ホーム画面 ===== -->
-  <div id="home" class="text-center">
-    <h1 class="text-5xl font-bold mb-10">Typing Master</h1>
-    <div class="space-y-6">
-      <button onclick="startGame('long')"
-        class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-xl transition">
-        長文モード
-      </button>
-      <button onclick="startGame('word')"
-        class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-xl transition">
-        単語モード
-      </button>
-    </div>
+  <h1 class="text-4xl font-bold text-center mb-6">Typing Master</h1>
+
+  <!-- ホーム画面 -->
+  <div id="home-screen" class="space-y-4 text-center">
+    <button class="mode-btn w-full py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl transition" data-mode="long">長文モード</button>
+    <button class="mode-btn w-full py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl transition" data-mode="word">単語モード</button>
   </div>
 
-  <!-- ===== ゲーム画面 ===== -->
-  <div id="game" class="hidden">
+  <!-- タイピング画面 -->
+  <div id="typing-screen" class="hidden space-y-4">
+    <div id="text" class="text-xl mb-2"></div>
+    <div id="romaji" class="text-lg mb-4"></div>
+    <input id="input" class="w-full p-3 rounded bg-black/40 outline-none focus:ring-2 focus:ring-indigo-400" placeholder="ここに入力..." autofocus autocomplete="off" />
+    <div class="flex justify-between text-sm text-gray-300">
+      <div>ミス: <span id="miss">0</span></div>
+      <div>正確率: <span id="accuracy">100</span>%</div>
+    </div>    
 
-    <div class="flex justify-between items-center mb-4">
-      <h2 id="modeTitle" class="text-xl font-bold"></h2>
-      <button onclick="backToHome()"
-        class="text-sm px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded">
-        戻る
-      </button>
+    <!-- やめるボタン -->
+    <div class="flex justify-between mt-4">
+    <button id="giveup" class="w-1/2 py-2 bg-red-600 hover:bg-red-500 rounded-xl transition">やめる</button>
     </div>
 
-    <div class="bg-white/10 backdrop-blur rounded-xl p-6 shadow-lg">
-      <div id="text-ja" class="text-xl leading-relaxed mb-2"></div>
-      <div id="text-ro" class="text-lg tracking-widest mb-4 text-indigo-200"></div>
+  </div>
 
-        <input id="input"
-          class="w-full p-3 rounded bg-black/40 outline-none focus:ring-2 focus:ring-indigo-400"
-          placeholder="ここに入力..."
-          autofocus
-          autocomplete="off"
-          autocorrect="off"
-          autocapitalize="off"
-          spellcheck="false"
-        />        
-
-      <div class="flex justify-between mt-4 text-sm text-gray-300">
-        <div>ミス: <span id="miss">0</span></div>
-        <div>正確率: <span id="accuracy">100</span>%</div>
-      </div>
-    </div>
-
-    <button id="restart"
-      class="mt-6 w-full py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl transition">
-      次の問題
-    </button>
+  <!-- 結果画面 -->
+  <div id="result-screen" class="hidden space-y-2 text-center">
+    <h2 class="text-2xl font-bold">結果</h2>
+    <div>ミス: <span id="res-miss"></span></div>
+    <div>タイピング時間: <span id="res-time"></span></div>
+    <div>正確率: <span id="res-acc"></span>%</div>
+    <button class="restart-btn w-full py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl transition">ホームに戻る</button>
   </div>
 
 </div>
 
-<script>
-/* ===== 問題データ ===== */
-const longProblems = [
-  { ja: "タイピング練習サイトを本格的に作ろう", ro: "taipingu renshuu saito wo honkakuteki ni tsukurou" },
-  { ja: "毎日少しずつ成長しよう", ro: "mainichi sukoshizutsu seichou shiyou" },
-  { ja: "集中して最後まで頑張ろう", ro: "shuuchuu shite saigo made ganbarou" },
-  { ja: "正確さを意識して打とう", ro: "seikakusa wo ishiki shite utou" }
-];
-
-const wordProblems = [
-  { ja: "猫", ro: "neko" },
-  { ja: "学校", ro: "gakkou" },
-  { ja: "電車", ro: "densha" },
-  { ja: "友達", ro: "tomodachi" },
-  { ja: "音楽", ro: "ongaku" },
-  { ja: "本", ro: "hon" }
-];
-
-let mode = "long";
-let text = "";
-let text1Display = "";
-let text1 = "";
-
-const homeDiv = document.getElementById("home");
-const gameDiv = document.getElementById("game");
-const modeTitle = document.getElementById("modeTitle");
-
-const textJaDiv = document.getElementById("text-ja");
-const textRoDiv = document.getElementById("text-ro");
-const input = document.getElementById("input");
-const missSpan = document.getElementById("miss");
-const accSpan = document.getElementById("accuracy");
-
-let startTime = null;
-let miss = 0;
-
-/* ===== 画面切り替え ===== */
-function startGame(selectedMode) {
-  mode = selectedMode;
-  modeTitle.textContent = (mode === "long") ? "長文モード" : "単語モード";
-
-  homeDiv.classList.add("hidden");
-  gameDiv.classList.remove("hidden");
-
-  restartGame();
-}
-
-function backToHome() {
-  homeDiv.classList.remove("hidden");
-  gameDiv.classList.add("hidden");
-
-  input.value = "";
-  miss = 0;
-  startTime = null;
-}
-
-/* ===== 新しい問題を選ぶ ===== */
-function pickRandomProblem() {
-  const list = (mode === "long") ? longProblems : wordProblems;
-  const p = list[Math.floor(Math.random() * list.length)];
-
-  text = p.ja;
-  text1Display = p.ro;
-  text1 = text1Display.replace(/\s+/g, "");
-}
-
-/* ===== 描画 ===== */
-function render(value) {
-  let jaHtml = "";
-  let roHtml = "";
-  let displayIndex = 0;
-
-  for (let i = 0; i < text1.length; i++) {
-    while (text1Display[displayIndex] === " ") {
-      roHtml += `<span class="text-indigo-400"> </span>`;
-      displayIndex++;
-    }
-
-    const displayChar = text1Display[displayIndex];
-
-    if (i < value.length) {
-      const ok = value[i] === text1[i];
-      roHtml += `<span class="${ok ? 'text-green-400' : 'text-red-400'}">${displayChar.toUpperCase()}</span>`;
-      if (!ok) miss++;
-    } else {
-      roHtml += `<span class="text-gray-400">${displayChar.toUpperCase()}</span>`;
-    }
-
-    displayIndex++;
-  }
-
-  while (displayIndex < text1Display.length) {
-    const ch = text1Display[displayIndex];
-    roHtml += `<span class="text-indigo-400">${ch === " " ? " " : ch.toUpperCase()}</span>`;
-    displayIndex++;
-  }
-
-  for (let i = 0; i < text.length; i++) {
-    jaHtml += `<span class="text-gray-300">${text[i]}</span>`;
-  }
-
-  textJaDiv.innerHTML = jaHtml;
-  textRoDiv.innerHTML = roHtml;
-  missSpan.textContent = miss;
-
-  const acc = Math.max(0, Math.round((1 - miss / Math.max(value.length, 1)) * 100));
-  accSpan.textContent = acc;
-}
-
-/* ===== 入力処理 ===== */
-input.addEventListener("input", e => {
-  if (!startTime) startTime = Date.now();
-  const v = e.target.value.toLowerCase().replace(/\s+/g, "");
-  render(v);
-
-  if (v.length >= text1.length) {
-    setTimeout(restartGame, 800);
-  }
-});
-
-/* ===== リスタート ===== */
-function restartGame() {
-  input.value = "";
-  miss = 0;
-  startTime = null;
-  pickRandomProblem();
-  render("");
-}
-
-document.getElementById("restart").addEventListener("click", restartGame);
-</script>
-
+<script src="problems.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
