@@ -1,57 +1,350 @@
-// 1問を表すクラス
+const kanaMap = {
+  // --------------------
+  // 母音
+  // --------------------
+  あ: ["A"], ア: ["A"],
+  い: ["I"], イ: ["I"],
+  う: ["U"], ウ: ["U"],
+  え: ["E"], エ: ["E"],
+  お: ["O"], オ: ["O"],
+
+  // --------------------
+  // か行
+  // --------------------
+  か: ["KA"], カ: ["KA"],
+  き: ["KI"], キ: ["KI"],
+  く: ["KU"], ク: ["KU"],
+  け: ["KE"], ケ: ["KE"],
+  こ: ["KO"], コ: ["KO"],
+
+  // --------------------
+  // さ行
+  // --------------------
+  さ: ["SA"], サ: ["SA"],
+  し: ["SHI","SI"], シ: ["SHI","SI"],
+  す: ["SU"], ス: ["SU"],
+  せ: ["SE"], セ: ["SE"],
+  そ: ["SO"], ソ: ["SO"],
+
+  // --------------------
+  // た行
+  // --------------------
+  た: ["TA"], タ: ["TA"],
+  ち: ["CHI","TI"], チ: ["CHI","TI"],
+  つ: ["TSU","TU"], ツ: ["TSU","TU"],
+  て: ["TE"], テ: ["TE"],
+  と: ["TO"], ト: ["TO"],
+
+  // --------------------
+  // な行
+  // --------------------
+  な: ["NA"], ナ: ["NA"],
+  に: ["NI"], ニ: ["NI"],
+  ぬ: ["NU"], ヌ: ["NU"],
+  ね: ["NE"], ネ: ["NE"],
+  の: ["NO"], ノ: ["NO"],
+
+  // --------------------
+  // は行
+  // --------------------
+  は: ["HA"], ハ: ["HA"],
+  ひ: ["HI"], ヒ: ["HI"],
+  ふ: ["FU","HU"], フ: ["FU","HU"],
+  へ: ["HE"], ヘ: ["HE"],
+  ほ: ["HO"], ホ: ["HO"],
+
+  // --------------------
+  // ま行
+  // --------------------
+  ま: ["MA"], マ: ["MA"],
+  み: ["MI"], ミ: ["MI"],
+  む: ["MU"], ム: ["MU"],
+  め: ["ME"], メ: ["ME"],
+  も: ["MO"], モ: ["MO"],
+
+  // --------------------
+  // や行
+  // --------------------
+  や: ["YA"], ヤ: ["YA"],
+  ゆ: ["YU"], ユ: ["YU"],
+  よ: ["YO"], ヨ: ["YO"],
+
+  // --------------------
+  // ら行
+  // --------------------
+  ら: ["RA"], ラ: ["RA"],
+  り: ["RI"], リ: ["RI"],
+  る: ["RU"], ル: ["RU"],
+  れ: ["RE"], レ: ["RE"],
+  ろ: ["RO"], ロ: ["RO"],
+
+  // --------------------
+  // わ行
+  // --------------------
+  わ: ["WA"], ワ: ["WA"],
+  を: ["WO"], ヲ: ["WO"],
+  ん: ["N","NN"], ン: ["N","NN"],
+
+  // --------------------
+  // 濁音
+  // --------------------
+  が: ["GA"], ガ: ["GA"],
+  ぎ: ["GI"], ギ: ["GI"],
+  ぐ: ["GU"], グ: ["GU"],
+  げ: ["GE"], ゲ: ["GE"],
+  ご: ["GO"], ゴ: ["GO"],
+
+  ざ: ["ZA"], ザ: ["ZA"],
+  じ: ["JI","ZI"], ジ: ["JI","ZI"],
+  ず: ["ZU"], ズ: ["ZU"],
+  ぜ: ["ZE"], ゼ: ["ZE"],
+  ぞ: ["ZO"], ゾ: ["ZO"],
+
+  だ: ["DA"], ダ: ["DA"],
+  ぢ: ["JI","DI"], ヂ: ["JI","DI"],
+  づ: ["ZU","DU"], ヅ: ["ZU","DU"],
+  で: ["DE"], デ: ["DE"],
+  ど: ["DO"], ド: ["DO"],
+
+  ば: ["BA"], バ: ["BA"],
+  び: ["BI"], ビ: ["BI"],
+  ぶ: ["BU"], ブ: ["BU"],
+  べ: ["BE"], ベ: ["BE"],
+  ぼ: ["BO"], ボ: ["BO"],
+
+  ぱ: ["PA"], パ: ["PA"],
+  ぴ: ["PI"], ピ: ["PI"],
+  ぷ: ["PU"], プ: ["PU"],
+  ぺ: ["PE"], ペ: ["PE"],
+  ぽ: ["PO"], ポ: ["PO"],
+
+  // --------------------
+  // 拗音
+  // --------------------
+  きゃ: ["KYA"], キャ: ["KYA"],
+  きゅ: ["KYU"], キュ: ["KYU"],
+  きょ: ["KYO"], キョ: ["KYO"],
+
+  しゃ: ["SHA","SYA"], シャ: ["SHA","SYA"],
+  しゅ: ["SHU","SYU"], シュ: ["SHU","SYU"],
+  しょ: ["SHO","SYO"], ショ: ["SHO","SYO"],
+
+  ちゃ: ["CHA","TYA"], チャ: ["CHA","TYA"],
+  ちゅ: ["CHU","TYU"], チュ: ["CHU","TYU"],
+  ちょ: ["CHO","TYO"], チョ: ["CHO","TYO"],
+
+  にゃ: ["NYA"], ニャ: ["NYA"],
+  にゅ: ["NYU"], ニュ: ["NYU"],
+  にょ: ["NYO"], ニョ: ["NYO"],
+
+  ひゃ: ["HYA"], ヒャ: ["HYA"],
+  ひゅ: ["HYU"], ヒュ: ["HYU"],
+  ひょ: ["HYO"], ヒョ: ["HYO"],
+
+  みゃ: ["MYA"], ミャ: ["MYA"],
+  みゅ: ["MYU"], ミュ: ["MYU"],
+  みょ: ["MYO"], ミョ: ["MYO"],
+
+  りゃ: ["RYA"], リャ: ["RYA"],
+  りゅ: ["RYU"], リュ: ["RYU"],
+  りょ: ["RYO"], リョ: ["RYO"],
+
+  ぎゃ: ["GYA"], ギャ: ["GYA"],
+  ぎゅ: ["GYU"], ギュ: ["GYU"],
+  ぎょ: ["GYO"], ギョ: ["GYO"],
+
+  じゃ: ["JA","JYA","ZYA"], ジャ: ["JA","JYA","ZYA"],
+  じゅ: ["JU","JYU","ZYU"], ジュ: ["JU","JYU","ZYU"],
+  じょ: ["JO","JYO","ZYO"], ジョ: ["JO","JYO","ZYO"],
+
+  びゃ: ["BYA"], ビャ: ["BYA"],
+  びゅ: ["BYU"], ビュ: ["BYU"],
+  びょ: ["BYO"], ビョ: ["BYO"],
+
+  ぴゃ: ["PYA"], ピャ: ["PYA"],
+  ぴゅ: ["PYU"], ピュ: ["PYU"],
+  ぴょ: ["PYO"], ピョ: ["PYO"],
+
+  // --------------------
+  // 小文字（単体入力 l~ / x~）
+  // --------------------
+  ぁ: ["LA","XA"], ァ: ["LA","XA"],
+  ぃ: ["LI","XI"], ィ: ["LI","XI"],
+  ぅ: ["LU","XU"], ゥ: ["LU","XU"],
+  ぇ: ["LE","XE"], ェ: ["LE","XE"],
+  ぉ: ["LO","XO"], ォ: ["LO","XO"],
+
+  ゃ: ["LYA","XYA"], ャ: ["LYA","XYA"],
+  ゅ: ["LYU","XYU"], ュ: ["LYU","XYU"],
+  ょ: ["LYO","XYO"], ョ: ["LYO","XYO"],
+
+  っ: ["LTU","XTU"], ッ: ["LTU","XTU"],
+
+  // --------------------
+  // 記号・空白
+  // --------------------
+  ー: ["-"],
+  "、": [","],
+  "。": ["."],
+  "　": [" "],
+  " ": [" "]
+};
+// --------------------
+// 漢字 → かな分解
+// --------------------
+const kanjiMap = {
+  少: ["す","こ"],
+  日: ["ひ"],
+  々: ["び"],
+  練: ["れん"],
+  習: ["しゅう"],
+  重: ["かさ"],
+  大: ["たい"],
+  切: ["せつ"],
+  入: ["にゅう"],
+  力: ["りょく"],
+  指: ["ゆび"],
+  動: ["うご"],
+  位置: ["い","ち"],
+  正確: ["せい","かく"],
+  向上: ["こう","じょう"],
+  焦: ["あせ"],
+  継続: ["けい","ぞく"],
+  鍵: ["かぎ"],
+  間違: ["ま","ちが"],
+  確認: ["かく","にん"],
+  修正: ["しゅう","せい"],
+  習慣: ["しゅう","かん"],
+  効率: ["こう","りつ"],
+  学: ["まな"],
+  毎日: ["まい","にち"],
+  短: ["た","ん"],
+  時: ["じ"],
+  間: ["か","ん"],
+  文章: ["ぶん","しょう"]
+};
+
+// --------------------
+// ひらがな・カタカナ → トークン
+// --------------------
+function buildTokensFromKana(text) {
+  const tokens = [];
+  let i = 0;
+
+  while (i < text.length) {
+    const two = text.slice(i, i + 2);
+    if (kanaMap[two]) {
+      tokens.push({ ja: two, ro: kanaMap[two] });
+      i += 2;
+      continue;
+    }
+
+    const one = text[i];
+    if (kanaMap[one]) {
+      tokens.push({ ja: one, ro: kanaMap[one] });
+    } else {
+      tokens.push({ ja: one, ro: [one] });
+    }
+    i++;
+  }
+
+  return tokens.map(t => ({
+    ja: t.ja,
+    ro: t.ro.map(r => r.toUpperCase())
+  }));
+}
+
+// --------------------
+// 漢字対応トークン生成
+// --------------------
+function buildTokensFromMixed(text) {
+  const tokens = [];
+  let i = 0;
+
+  while (i < text.length) {
+    let matched = false;
+
+    for (const k in kanjiMap) {
+      if (text.startsWith(k, i)) {
+        const readings = kanjiMap[k];
+
+        readings.forEach((kana, idx) => {
+          const subs = buildTokensFromKana(kana);
+
+          subs.forEach((t, subIdx) => {
+            const isLast =
+              idx === readings.length - 1 &&
+              subIdx === subs.length - 1;
+
+            tokens.push({
+              ja: isLast ? k : "",
+              ro: t.ro
+            });
+          });
+        });
+
+        i += k.length;
+        matched = true;
+        break;
+      }
+    }
+
+    if (matched) continue;
+
+    const two = text.slice(i, i + 2);
+    if (kanaMap[two]) {
+      tokens.push({ ja: two, ro: kanaMap[two] });
+      i += 2;
+      continue;
+    }
+
+    const one = text[i];
+    if (kanaMap[one]) {
+      tokens.push({ ja: one, ro: kanaMap[one] });
+    } else {
+      tokens.push({ ja: one, ro: [one] });
+    }
+
+    i++;
+  }
+
+  return tokens.map(t => ({
+    ja: t.ja,
+    ro: t.ro.map(r => r.toUpperCase())
+  }));
+}
+
+// --------------------
+// TypingProblem
+// --------------------
 class TypingProblem {
-  constructor(ja, ro, mode="long") {
-    this.ja = ja;                       // 日本語文
-    this.ro = ro.replace(/\s+/g, "");   // ローマ字（スペースなし）
-    this.mode = mode;                    // 'long' or 'word'
+  constructor(text, mode = "long") {
+    this.text = text;
+    this.tokens = buildTokensFromMixed(text);
+    this.mode = mode;
   }
 }
 
-// 長文モード
+// --------------------
+// 問題
+// --------------------
 const longProblems = [
-  // 1. タイピングを日々コツコツ
   new TypingProblem(
     "タイピングは日々少しずつ練習を重ねることが大切である。毎日短時間でも文章を入力し、指の動きや文字の位置に意識を向けることで、正確さとスピードの両方を向上させることができる。焦らず継続することが上達の鍵であり、間違えた部分を確認しながら修正する習慣をつけると効率よく学べる。",
-    "TAIPINGUHA HIBI SUKOSHI ZUZU RENSYUU WO KASANERU KOTO GA TAiSETSU DE ARU. MAINICHI TANJIKAN DEMO BUNSHOU WO NYUURYOKU SHI, YUBI NO UGOKI YA MOJI NO ICHI NI ISHIKI WO MUKE RU KOTO DE, SEIKAKUSA TO SUPIIDO NO RYOUHOU WO KOUJOU SASE RU KOTO GA DEKIRU. ASERAZU KEIZOKU SURU KOTO GA JOUTATSU NO KAGI DE ARI, MACHIGAETA BUBUN WO KAKUNIN SHI NAGARA SHUUSEI SURU SHUUKAN WO TSUKERU TO KOURITSU YOKU MANABERU."
-  ),
-
-  // 2. 世界の豆知識
-  new TypingProblem(
-    "世界には驚くような豆知識がたくさん存在する。例えば、オーストラリアではカンガルーが野生で街を歩き、ブラジルではザリガニの養殖が盛んである。ポーランドのある都市では毎年オレンジを使った祭りが開かれ、多くの観光客で賑わう。こうした情報を知っておくと、旅行や日常の会話の中でも話題として活用できる。",
-    "SEKAI NI HA ODOROKU YOU NA MAMECHISHIKI GA TAKUSAN SONZAI SURU. TATOEBA OOSUTORARIA DE HA KANGARUU GA YASEI DE MACHI WO ARUKI, BURAZIRU DE HA ZARIGANI NO YOUSHOKU GA SAKAN DE ARU. POORANDO NO ARU TOSHI DE HA MAI TOSHI ORENJI WO TSUKATTA MATSURI GA HIRAKA RE, OOKU NO KANKOUKYAKU DE NIGIWAU. KOU SHITA JOUHOU WO SHITTE OKU TO, RYOKOU YA NICHIJOU NO KAIWA NO NAKA DEMO WADAI TO SHITE KATSYOU DEKIRU."
-  ),
-
-  // 3. 家事の豆知識
-  new TypingProblem(
-    "家事を効率よくこなすためには、ちょっとした工夫が役立つ。洗濯物は色や素材ごとに分けることで傷みを防ぎ、オーブンやコンロの使い方を工夫すると調理時間を短縮できる。掃除では道具を整理して順序良く動かすと作業がスムーズになる。こうした日々の積み重ねが生活全体の快適さを高めることにつながる。",
-    "KAJI WO KOURITSU YOKU KONASU TAME NI HA, CHOTTO SHITA KUFUU GA YAKUDATSU. SENTAKUMONO HA IRO YA SOZAI GOTO NI WAKE RU KOTO DE ITAMI WO FUSEGI, OOBUN YA KONRO NO TSUKAIKATA WO KUFUU SURU TO CHOURI JIKAN WO TANSHUKU DEKIRU. SOUJI DE HA DOUGU WO SEIRI SHITE JUNJO YOKU UGOKASU TO SAGYOU GA SUMU-ZU NI NARU. KOU SHITA HIBI NO TSUMIKASANE GA SEIKATSU ZENTAI NO KAITEKISA WO TAKAMERU KOTO NI TSUNAGARU."
-  ),
-
-  // 4. 意外に知らない世界の常識
-  new TypingProblem(
-    "世界には普段あまり知られていない常識が数多く存在する。例えば南極では夏でも氷点下の気温が続き、北欧の都市では古い郵便制度が今も使われている。こうした知識を覚えておくと、旅行の際や日常の会話で驚きや興味深い話題として活用できることがある。",
-    "SEKAI NI HA FUDAN AMARI SHIRARETE INAI JOUSHIKI GA KAZU OOKU SONZAI SURU. TATOEBA NANKYOKU DE HA NATSU DEMO HYOU TENKA NO KIO ON GA TSUZUKI, HOKUOU NO TOSHI DE HA FURUI YUUBIN SEIDO GA IMA MO TSUKAWARETE IRU. KOU SHITA CHISHIKI WO OBOETE OKU TO, RYOKOU NO SAI YA NICHIJOU NO KAIWA DE ODOROKI YA KYOUMI BUKAI WADAI TO SHITE KATSYOU DEKIRU KOTO GA ARU."
-  ),
-
-  // 5. タイピングは正確性
-  new TypingProblem(
-    "タイピングの上達にはスピードだけでなく正確性が重要である。焦らず確実に文字を入力し、間違えた部分は振り返って修正することが上達への近道である。長文を入力する際も文の構造を意識し、句読点や改行を正確に打つことで、自然に正確かつ速くタイピングできるようになる。",
-    "TAIPINGU NO JOUTATSU NI HA SUPIIDO DAKE DE NAKU SEIKAKUSEI GA JUYOU DE ARU. ASERAZU KAKUJITSU NI MOJI WO NYUURYOKU SHI, MACHIGAETA BUBUN HA FURIKAETTE SHUUSEI SURU KOTO GA JOUTATSU HE NO CHIKAMICHI DE ARU. CHOUBUN WO NYUURYOKU SURU SAI MO BUN NO KOUZOU WO ISHIKI SHI, KUTOUTEN YA KAIGYOU WO SEIKAKU NI UTU KOTO DE, SHIZEN NI SEIKAKU KATSU HAYAKU TAIPINGU DEKIRU YOU NI NARU."
+    "long"
   )
 ];
 
-
-// 単語モード
 const wordProblems = [
-  new TypingProblem("猫", "neko", "word"),
-  new TypingProblem("学校", "gakkou", "word"),
-  new TypingProblem("電車", "densha", "word"),
-  new TypingProblem("友達", "tomodachi", "word"),
-  new TypingProblem("音楽", "ongaku", "word")
+  new TypingProblem("ねこ", "word"),
+  new TypingProblem("がっこう", "word"),
+  new TypingProblem("でんしゃ", "word"),
+  new TypingProblem("ともだち", "word"),
+  new TypingProblem("おんがく", "word")
 ];
 
-// モードに応じてランダムに1問を返す関数
+// --------------------
 function pickRandomProblem(mode) {
-  const list = (mode === "long") ? longProblems : wordProblems;
+  const list = mode === "long" ? longProblems : wordProblems;
   return list[Math.floor(Math.random() * list.length)];
 }

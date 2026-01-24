@@ -1,68 +1,111 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>Typing Master</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<style>
-.cursor { animation: blink 1s infinite; }
-@keyframes blink { 0%,50%,100%{opacity:1;}25%,75%{opacity:0;} }
-/* CSS: 画面揺れ */
-@keyframes shake {
-  0% { transform: translateX(0); }
-  20% { transform: translateX(-5px); }
-  40% { transform: translateX(5px); }
-  60% { transform: translateX(-5px); }
-  80% { transform: translateX(5px); }
-  100% { transform: translateX(0); }
-}
+  <meta charset="UTF-8">
+  <title>Typing Master</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 
-.shake {
-  animation: shake 0.4s;
-}
-</style>
+  <style>
+    .cursor {
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 50%, 100% { opacity: 1; }
+      25%, 75% { opacity: 0; }
+    }
+
+    /* 画面揺れ */
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      20% { transform: translateX(-5px); }
+      40% { transform: translateX(5px); }
+      60% { transform: translateX(-5px); }
+      80% { transform: translateX(5px); }
+      100% { transform: translateX(0); }
+    }
+
+    .shake {
+      animation: shake 0.4s;
+    }
+  </style>
 </head>
+
 <body class="bg-gradient-to-br from-indigo-900 to-black min-h-screen text-white">
 
-<div class="max-w-3xl mx-auto p-8">
+  <div class="max-w-3xl mx-auto p-8">
 
-  <h1 class="text-4xl font-bold text-center mb-6">Typing Master</h1>
+    <h1 class="text-4xl font-bold text-center mb-6">Typing Master</h1>
 
-  <!-- ホーム画面 -->
-  <div id="home-screen" class="space-y-4 text-center">
-    <button class="mode-btn w-full py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl transition" data-mode="long">長文モード</button>
-    <button class="mode-btn w-full py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl transition" data-mode="word">単語モード</button>
-  </div>
+    <!-- ホーム画面 -->
+    <div id="home-screen" class="space-y-4 text-center">
+      <button
+        class="mode-btn w-full py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl transition"
+        data-mode="long">
+        長文モード
+      </button>
 
-  <!-- タイピング画面 -->
-  <div id="typing-screen" class="hidden space-y-4">
-    <div id="text" class="text-xl mb-2"></div>
-    <div id="romaji" class="text-lg mb-4"></div>
-    <input id="input" class="w-full p-3 rounded bg-black/40 outline-none focus:ring-2 focus:ring-indigo-400" placeholder="ここに入力..." autofocus autocomplete="off" />
-    <div class="flex justify-between text-sm text-gray-300">
-      <div>ミス: <span id="miss">0</span></div>
-      <div>正確率: <span id="accuracy">100</span>%</div>
-    </div>    
+      <button
+        class="mode-btn w-full py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl transition"
+        data-mode="word">
+        単語モード
+      </button>
+    </div>
 
-    <!-- やめるボタン -->
-    <div class="flex justify-between mt-4">
-    <button id="giveup" class="w-1/2 py-2 bg-red-600 hover:bg-red-500 rounded-xl transition">やめる</button>
+    <!-- タイピング画面 -->
+    <div id="typing-screen" class="hidden space-y-4">
+
+      <div id="text" class="text-xl mb-2"></div>
+      <div id="romaji" class="text-lg mb-4"></div>
+
+      <input
+        id="input"
+        class="w-full p-3 rounded bg-black/40 outline-none focus:ring-2 focus:ring-indigo-400"
+        placeholder="ここに入力..."
+        autofocus
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off"
+        spellcheck="false"
+      />
+
+      <div class="flex justify-between text-sm text-gray-300">
+        <div>ミス: <span id="miss">0</span></div>
+        <div>正確率: <span id="accuracy">100</span>%</div>
+      </div>
+
+      <!-- やめるボタン -->
+      <div class="flex justify-between mt-4">
+        <button
+          id="giveup"
+          class="w-1/2 py-2 bg-red-600 hover:bg-red-500 rounded-xl transition">
+          やめる
+        </button>
+      </div>
+
+    </div>
+
+    <!-- 結果画面 -->
+    <div id="result-screen" class="hidden space-y-2 text-center">
+      <h2 class="text-2xl font-bold">結果</h2>
+
+      <div>ミス: <span id="res-miss"></span></div>
+      <div>タイピング時間: <span id="res-time"></span></div>
+      <div>正確率: <span id="res-acc"></span>%</div>
+
+      <button
+        class="restart-btn w-full py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl transition">
+        ホームに戻る
+      </button>
     </div>
 
   </div>
 
-  <!-- 結果画面 -->
-  <div id="result-screen" class="hidden space-y-2 text-center">
-    <h2 class="text-2xl font-bold">結果</h2>
-    <div>ミス: <span id="res-miss"></span></div>
-    <div>タイピング時間: <span id="res-time"></span></div>
-    <div>正確率: <span id="res-acc"></span>%</div>
-    <button class="restart-btn w-full py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl transition">ホームに戻る</button>
-  </div>
+  <!-- 問題データ -->
+  <script src="problems.js"></script>
 
-</div>
+  <!-- ロジック -->
+  <script src="script.js"></script>
 
-<script src="problems.js"></script>
-<script src="script.js"></script>
 </body>
 </html>
