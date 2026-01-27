@@ -69,6 +69,25 @@ function startGame(mode) {
   renderRomaji();
 }
 
+function pickRandomProblem(mode) {
+  let list;
+  switch(mode) {
+    case "long":
+      list = longProblems;
+      break;
+    case "word":
+      list = wordProblems;
+      break;
+    case "english":
+      list = englishProblems;
+      break;
+    default:
+      list = wordProblems;
+  }
+  return list[Math.floor(Math.random() * list.length)];
+}
+
+
 // --------------------
 // 表示更新（日本語）
 // --------------------
@@ -220,6 +239,18 @@ function finishGame() {
   resultScreen.classList.remove("hidden");
   currentProblem = null;
 }
+
+// --------------------
+// 結果画面：ホームに戻る
+// --------------------
+document.querySelectorAll(".restart-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    resultScreen.classList.add("hidden");
+    typingScreen.classList.add("hidden");
+    homeScreen.classList.remove("hidden");
+    currentProblem = null;
+  });
+});
 
 // --------------------
 // やめる

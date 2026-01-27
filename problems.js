@@ -500,6 +500,13 @@ const wordProblems = [
   new TypingProblem("おんがく", "word")
 ];
 
+
+const englishProblems = [
+  new TypingProblem("The cat is on the roof.", "english"),
+  new TypingProblem("Typing practice improves skills.", "english"),
+  new TypingProblem("Consistency is key to progress.", "english")
+];
+
 // --------------------
 // ランダムに問題を取得
 // --------------------
