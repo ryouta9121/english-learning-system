@@ -39,22 +39,28 @@
 
     <!-- ホーム画面 -->
     <div id="home-screen" class="space-y-4 text-center">
-      <button
-        class="mode-btn w-full py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl transition"
-        data-mode="long">
-        長文モード
-      </button>
-
-      <button
-        class="mode-btn w-full py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl transition"
-        data-mode="word">
-        単語モード
-      </button>
+        <!-- <button
+          class="mode-btn w-full py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl transition"
+          data-mode="long">
+          長文モード
+        </button>
+  
+        <button
+          class="mode-btn w-full py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl transition"
+          data-mode="word">
+          単語モード
+        </button> -->
 
       <button
         class="mode-btn w-full py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl transition"
         data-mode="english">
         英文モード
+      </button>
+
+      <button
+        class="mode-btn w-full py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl transition"
+        data-mode="english-word">
+        英文単語モード
       </button>
     </div>
 
@@ -63,6 +69,12 @@
 
       <div id="text" class="text-xl mb-2"></div>
       <div id="romaji" class="text-lg mb-4"></div>
+
+ <!-- ★ここに追加 -->
+  <div
+    id="translation"
+    class="text-sm text-white/70 italic mb-2 hidden">
+  </div>
 
       <input
         id="input"

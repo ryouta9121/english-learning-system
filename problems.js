@@ -179,7 +179,7 @@ const kanaMap = {
   ょ: ["LYO","XYO"], ョ: ["LYO","XYO"],
 
   っ: ["LTU","XTU"], ッ: ["LTU","XTU"],
-
+ 
   // --------------------
   // 記号・空白
   // --------------------
@@ -470,6 +470,15 @@ class TypingProblem {
   }
 }
 
+class TypingProblem2 {
+  constructor(text, mode = "long", jaText = null) {
+    this.text = text;
+    this.tokens = buildTokensFromMixed(text);
+    this.mode = mode;
+    this.jaText = jaText; // ← OK
+  }
+}
+
 // --------------------
 // 問題
 // --------------------
@@ -500,17 +509,123 @@ const wordProblems = [
   new TypingProblem("おんがく", "word")
 ];
 
+const wordenglishProblems = [
+
+  new TypingProblem2("Yes","english-word","はい"),
+  new TypingProblem2("No","english-word","いいえ"),
+  new TypingProblem2("OK","english-word","わかった"),
+  new TypingProblem2("Thanks","english-word","ありがとう"),
+  new TypingProblem2("Sorry","english-word","ごめん"),
+  new TypingProblem2("Hello","english-word","こんにちは"),
+  new TypingProblem2("Bye","english-word","じゃあね"),
+  new TypingProblem2("Sure","english-word","もちろん"),
+  new TypingProblem2("Maybe","english-word","たぶん"),
+  new TypingProblem2("Really","english-word","本当に？"),
+
+  new TypingProblem2("Right","english-word","その通り"),
+  new TypingProblem2("Wrong","english-word","間違い"),
+  new TypingProblem2("Wait","english-word","待って"),
+  new TypingProblem2("Help","english-word","助けて"),
+  new TypingProblem2("Done","english-word","終わった"),
+  new TypingProblem2("Cool","english-word","いいね"),
+  new TypingProblem2("Nice","english-word","いい感じ"),
+  new TypingProblem2("Fine","english-word","大丈夫"),
+  new TypingProblem2("Deal","english-word","了解"),
+  new TypingProblem2("Guess","english-word","〜だと思う"),
+
+  new TypingProblem2("Hope","english-word","願う"),
+  new TypingProblem2("Think","english-word","考える"),
+  new TypingProblem2("Know","english-word","知っている"),
+  new TypingProblem2("Feel","english-word","感じる"),
+  new TypingProblem2("Want","english-word","欲しい"),
+  new TypingProblem2("Need","english-word","必要"),
+  new TypingProblem2("Like","english-word","好き"),
+  new TypingProblem2("Love","english-word","愛する"),
+  new TypingProblem2("Hate","english-word","嫌い"),
+  new TypingProblem2("Care","english-word","気にする"),
+
+  new TypingProblem2("Try","english-word","試す"),
+  new TypingProblem2("Start","english-word","始める"),
+  new TypingProblem2("Stop","english-word","止める"),
+  new TypingProblem2("Move","english-word","動く"),
+  new TypingProblem2("Stay","english-word","滞在する"),
+  new TypingProblem2("Leave","english-word","去る"),
+  new TypingProblem2("Come","english-word","来る"),
+  new TypingProblem2("Go","english-word","行く"),
+  new TypingProblem2("Back","english-word","戻る"),
+  new TypingProblem2("Again","english-word","もう一度"),
+
+  new TypingProblem2("Today","english-word","今日"),
+  new TypingProblem2("Tomorrow","english-word","明日"),
+  new TypingProblem2("Now","english-word","今"),
+  new TypingProblem2("Later","english-word","後で"),
+  new TypingProblem2("Always","english-word","いつも"),
+  new TypingProblem2("Often","english-word","よく"),
+  new TypingProblem2("Sometimes","english-word","時々"),
+  new TypingProblem2("Never","english-word","決して〜ない"),
+  new TypingProblem2("Already","english-word","すでに"),
+  new TypingProblem2("Soon","english-word","すぐに"),
+
+  new TypingProblem2("Here","english-word","ここ"),
+  new TypingProblem2("There","english-word","そこ"),
+  new TypingProblem2("Together","english-word","一緒に"),
+  new TypingProblem2("Alone","english-word","一人で"),
+  new TypingProblem2("Easy","english-word","簡単"),
+  new TypingProblem2("Hard","english-word","難しい"),
+  new TypingProblem2("Busy","english-word","忙しい"),
+  new TypingProblem2("Free","english-word","暇"),
+  new TypingProblem2("Ready","english-word","準備できた"),
+  new TypingProblem2("Safe","english-word","安全"),
+
+  new TypingProblem2("Problem","english-word","問題"),
+  new TypingProblem2("Answer","english-word","答え"),
+  new TypingProblem2("Question","english-word","質問"),
+  new TypingProblem2("Reason","english-word","理由"),
+  new TypingProblem2("Idea","english-word","考え"),
+  new TypingProblem2("Chance","english-word","機会"),
+  new TypingProblem2("Change","english-word","変化"),
+  new TypingProblem2("Result","english-word","結果"),
+  new TypingProblem2("Point","english-word","要点"),
+  new TypingProblem2("Truth","english-word","真実")
+];
 
 const englishProblems = [
-  new TypingProblem("The cat is on the roof.", "english"),
-  new TypingProblem("Typing practice improves skills.", "english"),
-  new TypingProblem("Consistency is key to progress.", "english")
+  new TypingProblem2(
+    "To be honest, practicing a little every day feels boring sometimes, but it really pays off in the long run.",
+    "english",
+    "正直に言うと、毎日少しずつ練習するのは退屈に感じることもあるが、長い目で見ると確実に成果が出る。"
+  ),
+  new TypingProblem2(
+    "I didn't expect the meeting to take so long, but we ended up having a really productive discussion.",
+    "english",
+    "会議がそんなに長くなるとは思っていなかったが、結果的にとても有意義な話し合いになった。"
+  ),
+  new TypingProblem2(
+    "If you keep making small mistakes, don't stress too much about it and just focus on improving step by step.",
+    "english",
+    "小さなミスが続いても、あまり気にしすぎず、一歩ずつ上達することに集中すればいい。"
+  )
 ];
 
 // --------------------
 // ランダムに問題を取得
 // --------------------
 function pickRandomProblem(mode) {
-  const list = mode === "long" ? longProblems : wordProblems;
+  let list;
+
+  switch (mode) {
+    case "long":
+      list = longProblems;
+      break;
+    case "word":
+      list = wordProblems;
+      break;
+    case "english":
+      list = englishProblems;
+      break;
+    default:
+      list = wordProblems;
+  }
+
   return list[Math.floor(Math.random() * list.length)];
 }

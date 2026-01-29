@@ -26,6 +26,7 @@ const resTimeEl = document.getElementById("res-time");
 const resAccEl = document.getElementById("res-acc");
 
 const giveupBtn = document.getElementById("giveup");
+const translationEl = document.getElementById("translation");
 
 // --------------------
 // モード選択
@@ -67,7 +68,15 @@ function startGame(mode) {
 
   renderText();
   renderRomaji();
-}
+
+  // 和訳表示（英文モードのみ）
+  if (currentProblem.jaText) {
+    translationEl.textContent = currentProblem.jaText;
+    translationEl.classList.remove("hidden");
+  } else {
+    translationEl.classList.add("hidden");
+  }
+}  
 
 function pickRandomProblem(mode) {
   let list;
@@ -80,6 +89,9 @@ function pickRandomProblem(mode) {
       break;
     case "english":
       list = englishProblems;
+      break;
+    case "english-word":
+      list = wordenglishProblems;
       break;
     default:
       list = wordProblems;
@@ -237,6 +249,7 @@ function finishGame() {
 
   typingScreen.classList.add("hidden");
   resultScreen.classList.remove("hidden");
+translationEl.classList.add("hidden");
   currentProblem = null;
 }
 
@@ -259,5 +272,6 @@ giveupBtn.addEventListener("click", () => {
   typingScreen.classList.add("hidden");
   resultScreen.classList.add("hidden");
   homeScreen.classList.remove("hidden");
+  translationEl.classList.add("hidden"); // ← 追
   currentProblem = null;
 });
