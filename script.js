@@ -7,9 +7,18 @@ let missCount = 0;
 let totalTyped = 0;
 let startTime = null;
 
-// --------------------
-// DOM
-// --------------------
+/* =========================
+   ★ 英文単語セッション用
+========================= */
+let wordSession = [];
+let wordIndex = 0;
+let sessionMiss = 0;
+let sessionTyped = 0;
+let sessionStartTime = null;
+
+/* =========================
+   DOM
+========================= */
 const homeScreen = document.getElementById("home-screen");
 const typingScreen = document.getElementById("typing-screen");
 const resultScreen = document.getElementById("result-screen");
@@ -28,9 +37,9 @@ const resAccEl = document.getElementById("res-acc");
 const giveupBtn = document.getElementById("giveup");
 const translationEl = document.getElementById("translation");
 
-// --------------------
-// モード選択
-// --------------------
+/* =========================
+   モード選択
+========================= */
 document.querySelectorAll(".mode-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     const mode = btn.dataset.mode;
@@ -38,14 +47,33 @@ document.querySelectorAll(".mode-btn").forEach(btn => {
   });
 });
 
-// --------------------
-// ゲーム開始
-// --------------------
+/* =========================
+   ゲーム開始
+========================= */
 function startGame(mode) {
-  currentProblem = pickRandomProblem(mode);
 
-  // トークンをディープコピー（候補削り用）
-  tokens = currentProblem.tokens.map(t => ({
+  // ★ 英文単語モード（10問）
+  if (mode === "english-word") {
+    wordSession = shuffle([...wordenglishProblems]).slice(0, 10);
+    wordIndex = 0;
+    sessionMiss = 0;
+    sessionTyped = 0;
+    sessionStartTime = Date.now();
+
+    loadProblem(wordSession[wordIndex]);
+    return;
+  }
+
+  // 今回は他モード未対応
+}
+
+/* =========================
+   問題ロード
+========================= */
+function loadProblem(problem) {
+  currentProblem = problem;
+
+  tokens = problem.tokens.map(t => ({
     ja: t.ja,
     ro: [...t.ro]
   }));
@@ -69,40 +97,17 @@ function startGame(mode) {
   renderText();
   renderRomaji();
 
-  // 和訳表示（英文モードのみ）
-  if (currentProblem.jaText) {
-    translationEl.textContent = currentProblem.jaText;
+  if (problem.jaText) {
+    translationEl.textContent = problem.jaText;
     translationEl.classList.remove("hidden");
   } else {
     translationEl.classList.add("hidden");
   }
-}  
-
-function pickRandomProblem(mode) {
-  let list;
-  switch(mode) {
-    case "long":
-      list = longProblems;
-      break;
-    case "word":
-      list = wordProblems;
-      break;
-    case "english":
-      list = englishProblems;
-      break;
-    case "english-word":
-      list = wordenglishProblems;
-      break;
-    default:
-      list = wordProblems;
-  }
-  return list[Math.floor(Math.random() * list.length)];
 }
 
-
-// --------------------
-// 表示更新（日本語）
-// --------------------
+/* =========================
+   表示（日本語）
+========================= */
 function renderText() {
   let html = "";
 
@@ -119,42 +124,22 @@ function renderText() {
   textEl.innerHTML = html;
 }
 
-// --------------------
-// 表示更新（ローマ字）
-// --------------------
+/* =========================
+   表示（ローマ字）
+========================= */
 function renderRomaji() {
   if (tokenIndex >= tokens.length) {
     romajiEl.textContent = "";
     return;
   }
 
-  const WINDOW_SIZE = 50;   // 表示ウィンドウ全体
-  const SCROLL_POS  = 25;   // ここを超えたらスクロール
-
-  // ① 先読み用：残り全部を連結
   let all = "";
   for (let i = tokenIndex; i < tokens.length; i++) {
     all += tokens[i].ro[0];
   }
 
-  // ② 全体の中での「今の入力位置」
-  let offset = charIndex;
-  // （tokenIndex 以前は表示しない設計なので charIndex だけでOK）
-
-  // ③ スクロール開始位置を計算
-  let start = 0;
-  if (offset > SCROLL_POS) {
-    start = offset - SCROLL_POS;
-  }
-
-  // ④ 表示ウィンドウを切り出す
-  const windowText = all.slice(start, start + WINDOW_SIZE);
-
-  // ⑤ ウィンドウ内でのカーソル位置
-  const cursorPos = offset - start;
-
-  const typed = windowText.slice(0, cursorPos);
-  const rest  = windowText.slice(cursorPos);
+  const typed = all.slice(0, charIndex);
+  const rest = all.slice(charIndex);
 
   romajiEl.innerHTML =
     `<span class="text-green-400">${typed}</span>` +
@@ -162,11 +147,9 @@ function renderRomaji() {
     `<span class="cursor">|</span>`;
 }
 
-
-
-// --------------------
-// 入力処理
-// --------------------
+/* =========================
+   入力処理
+========================= */
 inputEl.addEventListener("keydown", (e) => {
   if (!currentProblem) return;
   if (e.key.length !== 1) return;
@@ -188,12 +171,11 @@ inputEl.addEventListener("keydown", (e) => {
 
   if (matched) {
     charIndex++;
+    tokens[tokenIndex].ro =
+      candidates.filter(c => c[charIndex - 1] === key);
 
-    // 現在入力に合う候補だけ残す
-    tokens[tokenIndex].ro = candidates.filter(c => c[charIndex - 1] === key);
-
-    // トークン完了判定
-    const done = tokens[tokenIndex].ro.some(c => charIndex >= c.length);
+    const done =
+      tokens[tokenIndex].ro.some(c => charIndex >= c.length);
 
     if (done) {
       tokenIndex++;
@@ -207,7 +189,7 @@ inputEl.addEventListener("keydown", (e) => {
   } else {
     missCount++;
     typingScreen.classList.remove("shake");
-    void typingScreen.offsetWidth; // reflow
+    void typingScreen.offsetWidth;
     typingScreen.classList.add("shake");
   }
 
@@ -217,61 +199,74 @@ inputEl.addEventListener("keydown", (e) => {
   e.preventDefault();
 });
 
-// --------------------
-// 統計更新
-// --------------------
+/* =========================
+   統計
+========================= */
 function updateStats() {
-  missEl.textContent = missCount.toString();
+  missEl.textContent = missCount;
 
   const correct = totalTyped - missCount;
-  const acc = totalTyped > 0
-    ? Math.floor((correct / totalTyped) * 100)
-    : 100;
+  const acc = Math.floor((correct / totalTyped) * 100);
 
-  accEl.textContent = acc.toString();
+  accEl.textContent = acc;
 }
 
-// --------------------
-// 終了処理
-// --------------------
+/* =========================
+   終了処理（10問制）
+========================= */
 function finishGame() {
-  const timeSec = ((Date.now() - startTime) / 1000).toFixed(2);
+  sessionMiss += missCount;
+  sessionTyped += totalTyped;
 
-  resMissEl.textContent = missCount.toString();
+  wordIndex++;
+
+  if (wordIndex < wordSession.length) {
+    loadProblem(wordSession[wordIndex]);
+    return;
+  }
+
+  // ★ 10問終了
+  const timeSec =
+    ((Date.now() - sessionStartTime) / 1000).toFixed(2);
+
+  const correct = sessionTyped - sessionMiss;
+  const acc = Math.floor((correct / sessionTyped) * 100);
+
+  resMissEl.textContent = sessionMiss;
   resTimeEl.textContent = `${timeSec} 秒`;
-
-  const correct = totalTyped - missCount;
-  const acc = totalTyped > 0
-    ? Math.floor((correct / totalTyped) * 100)
-    : 100;
-
-  resAccEl.textContent = acc.toString();
+  resAccEl.textContent = acc;
 
   typingScreen.classList.add("hidden");
   resultScreen.classList.remove("hidden");
-translationEl.classList.add("hidden");
+  translationEl.classList.add("hidden");
+
   currentProblem = null;
 }
 
-// --------------------
-// 結果画面：ホームに戻る
-// --------------------
+/* =========================
+   ホームに戻る
+========================= */
 document.querySelectorAll(".restart-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     resultScreen.classList.add("hidden");
-    typingScreen.classList.add("hidden");
     homeScreen.classList.remove("hidden");
     currentProblem = null;
   });
 });
 
-// --------------------
-// やめる
-// --------------------
+/* =========================
+   やめる
+========================= */
 giveupBtn.addEventListener("click", () => {
   typingScreen.classList.add("hidden");
-  resultScreen.classList.add("hidden");
   homeScreen.classList.remove("hidden");
-  translationEl.classList.add("hidden"); // ← 追
+  translationEl.classList.add("hidden");
   currentProblem = null;
 });
+
+/* =========================
+   util
+========================= */
+function shuffle(arr) {
+  return arr.sort(() => Math.random() - 0.5);
+}
